@@ -4,20 +4,18 @@ const pool = require("../utils/Pool");
 
 const server = net.createServer(function(socket) {
   const { remoteAddress: addr, remotePort: port } = socket;
-  pool.add({ addr, port, socket });
+  pool.add(socket);
   const client = `${addr} (${port})`;
   let date = new Date().toLocaleString();
   console.log(`${date} CONNECTION : ${client})`);
   socket.on('data', function(data) {
     let date = new Date().toLocaleString();
     console.log(`${date} DATA : ${addr} (${port})`);
-    for (const s of pool.sockets.values()) {
-      if (s === socket) { continue; }
-      s.write(`${client} : ${data.toString()}`);
-    }
+    const msg = data.toString();
+    pool.broadcast(msg, socket);
   });
   socket.on('close', function() {
-    pool.remove(client);
+    pool.remove(socket);
     console.log(`${date} CLOSED CONNECTION : ${client})`);
   });
 });
