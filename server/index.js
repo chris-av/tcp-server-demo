@@ -24,6 +24,10 @@ const server = net.createServer(function(socket) {
   });
 });
 
+server.on("error", function(err) {
+  throw err;
+});
+
 server.listen(port, function() {
   console.log('launching tcp server on port ' + port + ' ... ');
 });
