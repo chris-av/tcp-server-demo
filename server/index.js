@@ -2,9 +2,11 @@ const net = require('net');
 const port = process.env.PORT || 7070;
 
 const sockets = new Map();
+const pool = require("../utils/Pool");
 
 const server = net.createServer(function(socket) {
   const { remoteAddress: addr, remotePort: port } = socket;
+  pool.add({ addr, port, socket });
   const client = `${addr} (${port})`;
   let date = new Date().toLocaleString();
   console.log(`${date} CONNECTION : ${client})`);
