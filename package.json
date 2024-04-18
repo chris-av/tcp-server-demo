@@ -8,9 +8,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "nodemon server.js",
-    "start": "node server.js",
-    "client": "node client.js"
+    "test": "nodemon server",
+    "server": "node server",
+    "client": "node client"
   },
   "keywords": [],
   "author": "",
