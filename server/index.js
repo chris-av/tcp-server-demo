@@ -2,6 +2,8 @@ const net = require('net');
 const PORT = process.env.PORT || 7070;
 const pool = require("./utils/Pool");
 const logger = require("./utils/logger");
+const getStream = require("./utils/use-stream");
+const stream = getStream();
 
 const server = net.createServer(function(socket) {
   const { remoteAddress: addr, remotePort: port } = socket;
@@ -9,16 +11,17 @@ const server = net.createServer(function(socket) {
   const client = `${addr} (${port})`;
   logger({
     type: "CONNECTION",
-    message: `client ${client} connected`
+    message: `client ${client} connected`,
+    stream,
   });
   socket.on('data', function(data) {
     let date = new Date().toLocaleString();
-    console.log(`${date} DATA : ${addr} (${port})`);
+    const msg = data.toString();
     logger({
       type: "DATA",
-      message: `${client} : ${data.toString()}`,
+      message: `${client} : ${msg}`,
+      stream,
     });
-    const msg = data.toString();
     pool.broadcast(msg, socket);
   });
   socket.on('close', function() {
@@ -26,11 +29,26 @@ const server = net.createServer(function(socket) {
     logger({
       type: "DISCONNECT",
       message: client,
-    })
+      stream,
+    });
   });
 });
 
 server.on("error", function(err) {
+  logger({
+    type: "ERROR",
+    message: err,
+    stream,
+  })
+  throw err;
+});
+
+server.on("close", function() {
+  logger({
+    type: "CLOSE",
+    message: "closing server",
+    stream,
+  })
   throw err;
 });
 
