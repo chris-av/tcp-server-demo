@@ -5,3 +5,4 @@ tests
 logs/
 *.log
 
+server/logs/*
