@@ -1,6 +1,6 @@
 const net = require('net');
 const PORT = process.env.PORT || 7070;
-const pool = require("../utils/Pool");
+const pool = require("./utils/Pool");
 
 const server = net.createServer(function(socket) {
   const { remoteAddress: addr, remotePort: port } = socket;
