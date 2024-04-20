@@ -15,7 +15,6 @@ const server = net.createServer(function(socket) {
     stream,
   });
   socket.on('data', function(data) {
-    let date = new Date().toLocaleString();
     const msg = data.toString();
     logger({
       type: "DATA",
